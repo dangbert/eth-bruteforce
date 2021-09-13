@@ -1,0 +1,12 @@
+{
+  "name": "js_attempt",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "ethereumjs-wallet": "^0.6.0"
+  }
+}
