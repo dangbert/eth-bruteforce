@@ -71,7 +71,7 @@ for (let i = 0; i < phrases.length; i++) {
     console.log("finished iterating cur, isSimple=", isSimple);
 
     if (isSimple) {
-      finalPhrases.push(queue.pop());
+      finalPhrases.push(cur);
       console.log(`${finalPhrases.length} finalPhrases`);
       //process.exit(12);
     }
