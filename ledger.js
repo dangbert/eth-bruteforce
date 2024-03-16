@@ -3,6 +3,8 @@ const bip39 = require('bip39');
 const fs = require('fs');
 
 
+const VERBOSE = process.argv.slice(3, 4).toString() === "-v";
+console.log("VERBOSE=", VERBOSE);
 function readSet() {
   const fname = "./english.txt"
   console.log(`reading dictionary file "${fname}"`);
@@ -93,15 +95,14 @@ for (const words of finalPhrases) {
 
 console.log(`\n\ntrying ${finalPhrases.length} final phrases:`);
 
-const VERBOSE = false;
 for (let i = 0; i < finalPhrases.length; i++) {
   //console.log(`trying phrase ${i+1}/${finalPhrases.length}... `);
   const progress = Math.floor(finalPhrases.length / 100);
   if (0 === (i+1) % (progress)) {
     console.log(`${(100 * (i+1) / finalPhrases.length).toFixed(1)}% complete`);
   }
-  const p = finalPhrases[i];
-  if (VERBOSE) console.log(`'${p.join(" ")}'`);
+  const p = finalPhrases[i].join(" ");
+  if (VERBOSE) console.log(`'${p}'`);
 
   if (bip39.validateMnemonic(p)) {
     console.log('VALID!!!');
