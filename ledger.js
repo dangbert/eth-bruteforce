@@ -19,7 +19,7 @@ let phrases = fs.readFileSync(fname).toString().split('\n');
 phrases = phrases.filter((p) => p); // remove any empty lines ("")
 phrases = [...phrases]; // ensure array
 
-console.log(`read ${phrases.length} phrases`);
+console.log(`read ${phrases.length} phrases (expanding possible patterns)...`);
 const finalPhrases = [];
 for (let i = 0; i < phrases.length; i++) {
   const p = phrases[i];
@@ -37,7 +37,6 @@ for (let i = 0; i < phrases.length; i++) {
   while (queue.length > 0) {
     // single phrase as list of words (maybe with patterns)
     const cur = queue.pop();
-    console.log("cur.length: ", cur.length, ", queue.length: ", queue.length);
 
     let isSimple = true;
     const prefix = [];
@@ -72,14 +71,12 @@ for (let i = 0; i < phrases.length; i++) {
 
     if (isSimple) {
       finalPhrases.push(cur);
-      console.log(`${finalPhrases.length} finalPhrases`);
-      //process.exit(12);
     }
-    //process.exit(13);
   }
 }
 
 // final sanity check
+console.log(`\n\nsanity check to validate ${finalPhrases.length} final phrases:`);
 for (const words of finalPhrases) {
   for (const word of words) {
     if (!WORDS.has(word)) {
@@ -95,10 +92,17 @@ for (const words of finalPhrases) {
 
 
 console.log(`\n\ntrying ${finalPhrases.length} final phrases:`);
+
+const VERBOSE = false;
 for (let i = 0; i < finalPhrases.length; i++) {
-  console.log(`trying phrase ${i+1}/${finalPhrases.length}... `);
+  //console.log(`trying phrase ${i+1}/${finalPhrases.length}... `);
+  const progress = Math.floor(finalPhrases.length / 100);
+  if (0 === (i+1) % (progress)) {
+    console.log(`${(100 * (i+1) / finalPhrases.length).toFixed(1)}% complete`);
+  }
   const p = finalPhrases[i];
-  console.log(p.join(" "));
+  if (VERBOSE) console.log(`'${p.join(" ")}'`);
+
   if (bip39.validateMnemonic(p)) {
     console.log('VALID!!!');
     console.log(p);
