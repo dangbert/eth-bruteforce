@@ -18,3 +18,8 @@ node eth.js example---UTC--2018-04-29T10-08-25.072Z--1f7c98090febf46155496a37000
 # brute force a bip39 mneomonic phrase (e.g. for a ledger) given list of possible phrases:
 node ledger.js example.ledger.txt
 ````
+
+Run tests:
+````bash
+yarn test
+````
