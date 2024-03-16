@@ -7,6 +7,7 @@
     "test": "node index.js example---UTC--2018-04-29T10-08-25.072Z--1f7c98090febf46155496a370002a10af7eb6766 exampleList.txt"
   },
   "dependencies": {
+    "bip39": "^3.1.0",
     "ethereumjs-wallet": "^0.6.0"
   }
 }
