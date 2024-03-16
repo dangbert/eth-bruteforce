@@ -23,7 +23,6 @@ console.log(`read ${phrases.length} phrases`);
 const finalPhrases = [];
 for (let i = 0; i < phrases.length; i++) {
   const p = phrases[i];
-  console.log(p);
 
   if (p[0] === "#") continue; // skip commented lines
 
@@ -43,13 +42,16 @@ for (let i = 0; i < phrases.length; i++) {
     let isSimple = true;
     const prefix = [];
     for (let k = 0; k < cur.length; k++) {
-      console.log("\n\nk = ", k);
       const w = cur[k];
       const suffix = cur.slice(k+1);
 
       // handle possible comma separated options for this particular word
-      const subwords = w.split(",");
-      console.log("subwords: ", subwords);
+      let subwords = w.split(",");
+
+      // wildcard
+      if (w === "*") {
+        subwords = Array.from(WORDS);
+      }
 
       if (subwords.length > 1) isSimple = false;
       for (const t of subwords) {
@@ -61,14 +63,12 @@ for (let i = 0; i < phrases.length; i++) {
         //queue.append(`${prefix} ${t} ${suffix});
         if (!isSimple) {
           queue.push(candidate);
-          console.log("pushing candidate: ", candidate);
         }
       }
       if (!isSimple) break;
 
       prefix.push(subwords[0]);
     }
-    console.log("finished iterating cur, isSimple=", isSimple);
 
     if (isSimple) {
       finalPhrases.push(cur);
@@ -96,7 +96,7 @@ for (const words of finalPhrases) {
 
 console.log(`\n\ntrying ${finalPhrases.length} final phrases:`);
 for (let i = 0; i < finalPhrases.length; i++) {
-  console.log(`trying phrase ${i}... `);
+  console.log(`trying phrase ${i+1}/${finalPhrases.length}... `);
   const p = finalPhrases[i];
   console.log(p.join(" "));
   if (bip39.validateMnemonic(p)) {
