@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 const bip39 = require('bip39');
 const fs = require('fs');
 

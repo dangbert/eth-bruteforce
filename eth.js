@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /*
  * run program with:
  *   node index.js /path/to/keystorefile /path/to/pwList.txt
