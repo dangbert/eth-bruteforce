@@ -1,0 +1,10 @@
+glide twenty fantasy carpet bread note narrow cousin disagree where trim crisp leave rapid secret response pupil beef decline upset side outer edit enlist
+
+# this is the correct one
+glide address fantasy carpet bread note narrow cousin disagree where trim crisp leave rapid secret response pupil beef decline upset side outer edit enlist
+
+# but also try to find possible matches using pattern matching
+glide place,address fantasy carpet bread note narrow cousin disagree where trim crisp leave rapid secret response pupil beef decline upset side outer edit enlist
+
+# this example uses a wildcard, but has multiple candidate matches
+#glide place,address fantasy carpet * note narrow cousin disagree where trim crisp leave rapid secret response pupil beef decline upset side outer edit enlist

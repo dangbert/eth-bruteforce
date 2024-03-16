@@ -1,12 +1,4 @@
 #!/usr/bin/env node
-/*
- * run program with:
- *   node index.js /path/to/keystorefile /path/to/pwList.txt
- * example:
- *   node index.js example---UTC--2018-04-29T10-08-25.072Z--1f7c98090febf46155496a370002a10af7eb6766 exampleList.txt
- */
-
-
 // based on the code linked from here https://ethereum.stackexchange.com/a/47036
 
 const Wallet = require('ethereumjs-wallet'), fs = require('fs');

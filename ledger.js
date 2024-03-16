@@ -6,7 +6,7 @@ const fs = require('fs');
 const VERBOSE = process.argv.slice(3, 4).toString() === "-v";
 console.log("VERBOSE=", VERBOSE);
 function readSet() {
-  const fname = "./english.txt"
+  const fname = "./bip39_english.txt"
   console.log(`reading dictionary file "${fname}"`);
   let words = fs.readFileSync(fname).toString().split('\n');
   return new Set(words);
@@ -107,7 +107,7 @@ for (let i = 0; i < finalPhrases.length; i++) {
   if (bip39.validateMnemonic(p)) {
     console.log('VALID!!!');
     console.log(p);
-    process.exit(0);
+    //process.exit(0);
   }
 }
 console.log('\nall done!');
