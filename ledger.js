@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 const bip39 = require('bip39');
 const fs = require('fs');
+const hdkey = require('ethereumjs-wallet/hdkey');
 
 
 /**
@@ -95,6 +96,26 @@ function readBip39Set() {
   return new Set(words);
 }
 
+/**
+ * Given a (valid) seed phrase, derive and return the corresponding first Ethereum address.
+ * Useful if you know the Eth address associated with your ledger
+ * (checking you've found the right seed phrase).
+ */
+function deriveFirstEthAddr(phrase) {
+  // derive seed buffer
+  const seed = bip39.mnemonicToSeedSync(phrase);
+
+  // derive HD wallet
+  const hdWallet = hdkey.fromMasterSeed(seed);
+
+  // derive Ethereum addresss
+  const addrIndex = 0; // 1st eth address
+  const wallet = hdWallet.derivePath(`m/44'/60'/0'0/${addrIndex}`).getWallet();
+  const address = wallet.getAddressString();
+  const publicKey = wallet.getPublicKeyString(); // distinct from wallet's address
+  return address;
+}
+
 
 // now we finally run the script
 (async () => {
@@ -116,14 +137,14 @@ function readBip39Set() {
   const finalPhrases = expandPatterns(phrases, WORDS);
 
   // final sanity check
-  console.log(`\n\nsanity check to validate ${finalPhrases.length} final phrases:`);
+  console.log(`\n\nsanity check to validate ${finalPhrases.length} final phrases...`);
   preValidate(finalPhrases, WORDS);
 
 
-  console.log(`\n\ntrying ${finalPhrases.length} final phrases:`);
+  console.log(`\n\ntrying ${finalPhrases.length} final phrases...`);
 
   // store list of possiblePhrases
-  const validPhrases = [];
+  let validPhrases = [];
   for (let i = 0; i < finalPhrases.length; i++) {
     //console.log(`trying phrase ${i+1}/${finalPhrases.length}... `);
     const progress = Math.floor(finalPhrases.length / 100);
@@ -140,5 +161,15 @@ function readBip39Set() {
       //process.exit(0);
     }
   }
-  console.log('\nall done!');
+  // make validPhrases unique
+  validPhrases = Array.from(new Set(validPhrases));
+  console.log(`\n\ncheck complete! ${validPhrases.length} valid phrases found.`);
+  if (validPhrases.length === 0) process.exit(0);
+
+  console.log(`summary:\n\nmatch #, first Eth public key, seed phrase`);
+  for (let i = 0; i < validPhrases.length; i++) {
+    const phrase = validPhrases[i];
+    const ethPub = deriveFirstEthAddr(phrase);
+    console.log(`${i+1}, ${ethPub}, ${phrase}`);
+  }
 })();
