@@ -122,7 +122,7 @@ function deriveFirstEthAddr(phrase) {
   const fname = process.argv.slice(2, 3).toString();
   //const VERBOSE = process.argv.slice(3, 4).toString() === "-v";
   const needle = process.argv.slice(3, 4).toString(); // (optional) known (1st) eth address of seed phrase
-  console.log(`needle='${needle}`);
+  console.log(`needle='${needle}'`);
 
   const WORDS = readBip39Set();
 
@@ -172,7 +172,8 @@ function deriveFirstEthAddr(phrase) {
     const phrase = validPhrases[i];
     const ethPub = deriveFirstEthAddr(phrase);
     let special = ""
-    if (needle !== "" && ethPub.toLowerCase().startsWith(needle.toLowerCase())) {
+    if (needle !== "") {
+      if (!ethPub.toLowerCase().startsWith(needle.toLowerCase())) continue;
       special = "===========>"
     }
     console.log(`${special}${i+1}, ${ethPub}, ${phrase}`);
