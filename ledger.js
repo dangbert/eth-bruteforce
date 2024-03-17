@@ -119,13 +119,14 @@ function deriveFirstEthAddr(phrase) {
 
 // now we finally run the script
 (async () => {
-  const VERBOSE = process.argv.slice(3, 4).toString() === "-v";
-  console.log("VERBOSE=", VERBOSE);
+  const fname = process.argv.slice(2, 3).toString();
+  //const VERBOSE = process.argv.slice(3, 4).toString() === "-v";
+  const needle = process.argv.slice(3, 4).toString(); // (optional) known (1st) eth address of seed phrase
+  console.log(`needle='${needle}`);
 
   const WORDS = readBip39Set();
 
   // read list of phrases to try
-  const fname = process.argv.slice(2, 3).toString();
   console.log(`reading mneomonic file "${fname}"`);
   let phrases = fs.readFileSync(fname).toString().split('\n');
   phrases = phrases.filter((p) => p); // remove any empty lines ("")
@@ -152,7 +153,7 @@ function deriveFirstEthAddr(phrase) {
       console.log(`${(100 * (i+1) / finalPhrases.length).toFixed(1)}% complete`);
     }
     const p = finalPhrases[i].join(" ");
-    if (VERBOSE) console.log(`'${p}'`);
+    //if (VERBOSE) console.log(`'${p}'`);
 
     if (bip39.validateMnemonic(p)) {
       console.log('VALID!!!');
@@ -170,6 +171,10 @@ function deriveFirstEthAddr(phrase) {
   for (let i = 0; i < validPhrases.length; i++) {
     const phrase = validPhrases[i];
     const ethPub = deriveFirstEthAddr(phrase);
-    console.log(`${i+1}, ${ethPub}, ${phrase}`);
+    let special = ""
+    if (needle !== "" && ethPub.toLowerCase().startsWith(needle.toLowerCase())) {
+      special = "===========>"
+    }
+    console.log(`${special}${i+1}, ${ethPub}, ${phrase}`);
   }
 })();

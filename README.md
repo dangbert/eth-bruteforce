@@ -17,6 +17,10 @@ node eth.js examples/UTC--2018-04-29T10-08-25.072Z--1f7c98090febf46155496a370002
 
 # brute force a bip39 mneomonic phrase (e.g. for a ledger) given list of possible phrases:
 node ledger.js examples/ledger.txt
+
+# if you know the first Ethereum address derived from your seed phrase
+#   you can optionally provide it to make the correct seed phrase more clear in the output:
+node ledger.js examples/ledger.txt 0xf6a13a0cb183240e528847b4bb32750d9c402f5e
 ````
 
 Run tests (auto runs the two examples above):
