@@ -2,7 +2,7 @@
 const bip39 = require('bip39');
 const fs = require('fs');
 const hdkey = require('ethereumjs-wallet/hdkey');
-
+const cliProgress = require('cli-progress');
 
 /**
  * Given a list of seed phrases (containing possible patterns like wildcards)
@@ -14,10 +14,10 @@ function expandPatterns(phrases, WORDS) {
   for (let i = 0; i < phrases.length; i++) {
     const p = phrases[i];
 
-    if (p[0] === "#") continue; // skip commented lines
+    if (p[0] === '#') continue; // skip commented lines
 
     // validate all words in phrase
-    const words = p.split(" ");
+    const words = p.split(' ');
     if (words.length != 24) {
       console.log(`WARNING: only ${words.length} present`);
       process.exit(1);
@@ -32,13 +32,13 @@ function expandPatterns(phrases, WORDS) {
       const prefix = [];
       for (let k = 0; k < cur.length; k++) {
         const w = cur[k];
-        const suffix = cur.slice(k+1);
+        const suffix = cur.slice(k + 1);
 
         // handle possible comma separated options for this particular word
-        let subwords = w.split(",");
+        let subwords = w.split(',');
 
         // wildcard
-        if (w === "*") {
+        if (w === '*') {
           subwords = Array.from(WORDS);
         }
 
@@ -48,7 +48,7 @@ function expandPatterns(phrases, WORDS) {
             console.log(`invalid word '${t}'`);
             process.exit(1);
           }
-          const candidate = prefix.concat([t]).concat(suffix)
+          const candidate = prefix.concat([t]).concat(suffix);
           //queue.append(`${prefix} ${t} ${suffix});
           if (!isSimple) {
             queue.push(candidate);
@@ -64,14 +64,24 @@ function expandPatterns(phrases, WORDS) {
       }
     }
   }
-  return finalPhrases;
+
+  // remove duplicates
+  return Array.from(new Set(finalPhrases));
 }
 
 /**
  * Peform sanity check that list of seed phrases are all possible.
  */
 function preValidate(finalPhrases, WORDS) {
-  for (const words of finalPhrases) {
+  const pbar = new cliProgress.SingleBar(
+    {},
+    cliProgress.Presets.shades_classic
+  );
+  pbar.start(finalPhrases.length, 0);
+
+  for (let i = 0; i < finalPhrases.length; i++) {
+    pbar.update(i);
+    const words = finalPhrases[i];
     for (const word of words) {
       if (!WORDS.has(word)) {
         console.log(`invalid word '${word}'`);
@@ -84,13 +94,14 @@ function preValidate(finalPhrases, WORDS) {
       process.exit(1);
     }
   }
+  pbar.stop();
 }
 
 /**
  * Return Set of all valid bip39 (English) words.
  */
 function readBip39Set() {
-  const fname = "./bip39_english.txt"
+  const fname = './bip39_english.txt';
   console.log(`reading dictionary file "${fname}"`);
   let words = fs.readFileSync(fname).toString().split('\n');
   return new Set(words);
@@ -116,7 +127,6 @@ function deriveFirstEthAddr(phrase) {
   return address;
 }
 
-
 // now we finally run the script
 (async () => {
   const fname = process.argv.slice(2, 3).toString();
@@ -133,49 +143,50 @@ function deriveFirstEthAddr(phrase) {
   phrases = [...phrases]; // ensure array
 
   console.log(`read ${phrases.length} lines (expanding possible patterns)...`);
-
-
   const finalPhrases = expandPatterns(phrases, WORDS);
 
   // final sanity check
-  console.log(`\n\nsanity check to validate ${finalPhrases.length} final phrases...`);
+  console.log(
+    `\n\nsanity check to validate ${finalPhrases.length} final phrases...`
+  );
   preValidate(finalPhrases, WORDS);
 
-
   console.log(`\n\ntrying ${finalPhrases.length} final phrases...`);
+  const pbar = new cliProgress.SingleBar(
+    {},
+    cliProgress.Presets.shades_classic
+  );
+  pbar.start(finalPhrases.length, 0);
 
   // store list of possiblePhrases
   let validPhrases = [];
   for (let i = 0; i < finalPhrases.length; i++) {
-    //console.log(`trying phrase ${i+1}/${finalPhrases.length}... `);
-    const progress = Math.floor(finalPhrases.length / 100);
-    if (0 === (i+1) % (progress)) {
-      console.log(`${(100 * (i+1) / finalPhrases.length).toFixed(1)}% complete`);
-    }
-    const p = finalPhrases[i].join(" ");
-    //if (VERBOSE) console.log(`'${p}'`);
+    pbar.update(i);
+    const p = finalPhrases[i].join(' ');
 
     if (bip39.validateMnemonic(p)) {
-      console.log('VALID!!!');
-      console.log(p);
+      //console.log('VALID!!! ', p);
       validPhrases.push(p);
       //process.exit(0);
     }
   }
   // make validPhrases unique
   validPhrases = Array.from(new Set(validPhrases));
-  console.log(`\n\ncheck complete! ${validPhrases.length} valid phrases found.`);
+  pbar.stop();
+  console.log(
+    `\n\ncheck complete! ${validPhrases.length}/${finalPhrases.length} tried phrases are valid.`
+  );
   if (validPhrases.length === 0) process.exit(0);
 
   console.log(`summary:\n\nmatch #, first Eth public key, seed phrase`);
   for (let i = 0; i < validPhrases.length; i++) {
     const phrase = validPhrases[i];
     const ethPub = deriveFirstEthAddr(phrase);
-    let special = ""
-    if (needle !== "") {
+    let special = '';
+    if (needle !== '') {
       if (!ethPub.toLowerCase().startsWith(needle.toLowerCase())) continue;
-      special = "===========>"
+      special = '===========>';
     }
-    console.log(`${special}${i+1}, ${ethPub}, ${phrase}`);
+    console.log(`${special}${i + 1}, ${ethPub}, ${phrase}`);
   }
 })();
