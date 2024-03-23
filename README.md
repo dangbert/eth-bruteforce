@@ -23,8 +23,11 @@ node ledger.js examples/ledger.txt
 node ledger.js examples/ledger.txt 0xf6a13a0cb183240e528847b4bb32750d9c402f5e
 ````
 
-Run tests (auto runs the two examples above):
 
 ````bash
+# auto runs the two examples above
+yarn examples
+
+# run unit tests
 yarn test
 ````

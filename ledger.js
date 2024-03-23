@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-const bip39 = require('bip39');
-const fs = require('fs');
-const hdkey = require('ethereumjs-wallet/hdkey');
-const cliProgress = require('cli-progress');
+import bip39 from 'bip39';
+import fs from 'fs';
+import hdkey from 'ethereumjs-wallet/hdkey.js';
+import * as cliProgress from 'cli-progress';
 
 /**
  * Given a list of seed phrases (containing possible patterns like wildcards)
@@ -112,7 +112,7 @@ function readBip39Set() {
  * Useful if you know the Eth address associated with your ledger
  * (checking you've found the right seed phrase).
  */
-function deriveFirstEthAddr(phrase) {
+export function deriveFirstEthAddr(phrase) {
   // derive seed buffer
   const seed = bip39.mnemonicToSeedSync(phrase);
 

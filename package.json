@@ -3,12 +3,18 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+   "type": "module",
   "scripts": {
-    "test": "node eth.js examples/UTC--2018-04-29T10-08-25.072Z--1f7c98090febf46155496a370002a10af7eb6766 examples/eth.txt && echo -e '\n********************\n' && node ledger.js examples/ledger.txt"
+    "examples": "node eth.js examples/UTC--2018-04-29T10-08-25.072Z--1f7c98090febf46155496a370002a10af7eb6766 examples/eth.txt && echo -e '\n********************\n' && node ledger.js examples/ledger.txt",
+    "test": "yarn mocha"
   },
   "dependencies": {
     "bip39": "^3.1.0",
     "cli-progress": "^3.12.0",
     "ethereumjs-wallet": "^0.6.0"
+  },
+  "devDependencies": {
+    "chai": "^5.1.0",
+    "mocha": "^10.3.0"
   }
 }
