@@ -137,7 +137,7 @@ export function deriveFirstEthAddr(phrase) {
   const WORDS = readBip39Set();
 
   // read list of phrases to try
-  console.log(`reading mneomonic file "${fname}"`);
+  console.log(`\nreading mneomonic file "${fname}"`);
   let phrases = fs.readFileSync(fname).toString().split('\n');
   phrases = phrases.filter((p) => p); // remove any empty lines ("")
   phrases = [...phrases]; // ensure array
@@ -147,11 +147,13 @@ export function deriveFirstEthAddr(phrase) {
 
   // final sanity check
   console.log(
-    `\n\nsanity check to validate ${finalPhrases.length} final phrases...`
+    `\n\nsanity check to validate ${finalPhrases.length.toLocaleString()} final phrases...`
   );
   preValidate(finalPhrases, WORDS);
 
-  console.log(`\n\ntrying ${finalPhrases.length} final phrases...`);
+  console.log(
+    `\n\ntrying ${finalPhrases.length.toLocaleString()} final phrases...`
+  );
   const pbar = new cliProgress.SingleBar(
     {},
     cliProgress.Presets.shades_classic
@@ -167,6 +169,18 @@ export function deriveFirstEthAddr(phrase) {
     if (bip39.validateMnemonic(p)) {
       //console.log('VALID!!! ', p);
       validPhrases.push(p);
+
+      if (needle !== '') {
+        // check if match with expected Ethereum address
+        const ethPub = deriveFirstEthAddr(p);
+        if (ethPub.toLowerCase().startsWith(needle.toLowerCase())) {
+          pbar.stop();
+          console.log(
+            `\nFound matching seed for address '${ethPub.toLowerCase()}', your seed phrase is:\n${p}`
+          );
+          process.exit(0);
+        }
+      }
       //process.exit(0);
     }
   }
@@ -178,15 +192,10 @@ export function deriveFirstEthAddr(phrase) {
   );
   if (validPhrases.length === 0) process.exit(0);
 
-  console.log(`summary:\n\nmatch #, first Eth public key, seed phrase`);
+  console.log(`summary:\n\nmatch #, first Eth address, seed phrase`);
   for (let i = 0; i < validPhrases.length; i++) {
     const phrase = validPhrases[i];
     const ethPub = deriveFirstEthAddr(phrase);
-    let special = '';
-    if (needle !== '') {
-      if (!ethPub.toLowerCase().startsWith(needle.toLowerCase())) continue;
-      special = '===========>';
-    }
-    console.log(`${special}${i + 1}, ${ethPub}, ${phrase}`);
+    console.log(`${i + 1}, ${ethPub}, ${phrase}`);
   }
 })();

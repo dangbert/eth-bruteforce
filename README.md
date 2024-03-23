@@ -20,12 +20,12 @@ node ledger.js examples/ledger.txt
 
 # if you know the first Ethereum address derived from your seed phrase
 #   you can optionally provide it to make the correct seed phrase more clear in the output:
-node ledger.js examples/ledger.txt 0xf6a13a0cb183240e528847b4bb32750d9c402f5e
+node ledger.js examples/ledger2.txt 0xc4AB28e5eF5291AD27B8F0FA79ED431EFcd2cDA3 
 ````
 
 
 ````bash
-# auto runs the two examples above
+# auto runs the examples above
 yarn examples
 
 # run unit tests

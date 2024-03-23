@@ -3,5 +3,5 @@
 # original seed:
 #video legal patch flat october doctor hungry junior few finish glow crater aware senior series reopen fragile loan situate depend chaos lake rifle rescue
 
-
-#video * patch flat october doctor hungry junior few finish glow crater aware senior series reopen fragile loan situate depend chaos lake rifle rescue
+# here we pretend we forgot one word and try all posibilties
+video * patch flat october doctor hungry junior few finish glow crater aware senior series reopen fragile loan situate depend chaos lake rifle rescue
