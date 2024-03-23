@@ -121,9 +121,9 @@ export function deriveFirstEthAddr(phrase) {
 
   // derive Ethereum addresss
   const addrIndex = 0; // 1st eth address
-  const wallet = hdWallet.derivePath(`m/44'/60'/0'0/${addrIndex}`).getWallet();
-  const address = wallet.getAddressString();
-  const publicKey = wallet.getPublicKeyString(); // distinct from wallet's address
+  const path = `m/44'/60'/0'/0/${addrIndex}`;
+  const wallet = hdWallet.derivePath(path).getWallet();
+  const address = `0x${wallet.getAddress().toString('hex')}`;
   return address;
 }
 

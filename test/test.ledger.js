@@ -10,7 +10,7 @@ describe('ledger.js', () => {
   describe('deriveFirstEthAddr()', () => {
     it('derives expected eth address', () => {
       const res = ledger.deriveFirstEthAddr(VALID_SEED);
-      expect(res).to.equal(VALID_SEED_ETH_ADDR);
+      expect(res).to.equal(VALID_SEED_ETH_ADDR.toLowerCase());
     });
   });
 });
